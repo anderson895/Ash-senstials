@@ -1,0 +1,3 @@
+email: "customer@gmail.com", password: "customer123"
+email: "admin@gmail.com",    password: "admin123"
+email: "supplier@gmail.com", password: "supplier123"

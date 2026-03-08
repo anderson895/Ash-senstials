@@ -193,9 +193,9 @@ function LoginPage({ onLogin }: { onLogin: (u: User) => void }): React.ReactElem
   const [pass, setPass]   = useState<string>("");
 
   const CREDS: Record<Role, { email: string; password: string; name: string }> = {
-    customer: { email: "customer@ashentials.com", password: "customer123", name: "Maria Santos" },
-    admin:    { email: "admin@ashentials.com",    password: "admin123",    name: "Admin User"   },
-    supplier: { email: "supplier@ashentials.com", password: "supplier123", name: "Supplier PH"  },
+    customer: { email: "customer@gmail.com", password: "customer123", name: "Maria Santos" },
+    admin:    { email: "admin@gmail.com",    password: "admin123",    name: "Admin User"   },
+    supplier: { email: "supplier@gmail.com", password: "supplier123", name: "Supplier PH"  },
   };
 
   const handle = (): void => {
