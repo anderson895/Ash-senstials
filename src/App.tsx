@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 // ─── shadcn/ui imports ────────────────────────────────────────────────────────
 import { Button }   from "@/components/ui/button";
 import { Input }    from "@/components/ui/input";
@@ -10,24 +9,12 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Textarea }  from "@/components/ui/textarea";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
-import {
-  Alert,
-  AlertDescription,
-} from "@/components/ui/alert";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 // ─── Heroicons imports ────────────────────────────────────────────────────────
 import {
@@ -61,92 +48,39 @@ import {
   BuildingStorefrontIcon,
   ArrowTrendingUpIcon,
   StarIcon,
+  GiftIcon,
+  SparklesIcon,
+  ChartPieIcon,
+  ClipboardIcon,
+  InboxIcon,
 } from "@heroicons/react/24/outline";
-import { StarIcon as StarSolid } from "@heroicons/react/24/solid";
+import { StarIcon as StarSolid, HeartIcon as HeartSolid } from "@heroicons/react/24/solid";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
-
 type Role = "customer" | "admin" | "supplier";
-
-interface User {
-  role: Role;
-  name: string;
-}
-
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-  stock: number;
-}
-
-interface CartItem extends Product {
-  qty: number;
-}
-
-interface Receipt {
-  items: CartItem[];
-  total: number;
-  date: string;
-}
-
-interface CustomerOrder {
-  id: string;
-  item: string;
-  total: number;
-  status: "Ready to Pay" | "Ready to Ship" | "To Receive";
-}
-
-interface AdminOrder {
-  id: string;
-  customer: string;
-  items: string;
-  total: number;
-  status: "pending" | "processing" | "completed";
-}
-
-interface Message {
-  from: string;
-  text: string;
-  time: string;
-  unread: boolean;
-}
-
-interface SupplyOrder {
-  id: string;
-  product: string;
-  qty: number;
-  date: string;
-  status: "delivered" | "in transit" | "pending";
-}
-
-interface SupplyItem {
-  name: string;
-  supplied: number;
-  needed: number;
-  image: string;
-}
-
-interface NavItem {
-  key: string;
-  icon: React.ReactElement;
-  label: string;
-}
+interface User { role: Role; name: string; }
+interface Product { id: number; name: string; price: number; image: string; stock: number; }
+interface CartItem extends Product { qty: number; }
+interface Receipt { items: CartItem[]; total: number; date: string; }
+interface CustomerOrder { id: string; item: string; total: number; status: "Ready to Pay" | "Ready to Ship" | "To Receive"; }
+interface AdminOrder { id: string; customer: string; items: string; total: number; status: "pending" | "processing" | "completed"; }
+interface Message { from: string; text: string; time: string; unread: boolean; }
+interface SupplyOrder { id: string; product: string; qty: number; date: string; status: "delivered" | "in transit" | "pending"; }
+interface SupplyItem { name: string; supplied: number; needed: number; image: string; }
+interface NavItem { key: string; icon: React.ReactElement; label: string; }
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
-
 const PRODUCTS: Product[] = [
-  { id: 1,  name: "Notebook",     price: 20, image: "/assets/notebook.webp", stock: 45  },
-  { id: 2,  name: "Pencil",       price: 10, image: "/assets/pencil.webp", stock: 120 },
-  { id: 3,  name: "Pen",          price: 10, image: "/assets/pen.webp", stock: 95  },
-  { id: 4,  name: "Eraser",       price: 5,  image: "/assets/eraser.webp", stock: 80  },
-  { id: 5,  name: "Sharpener",    price: 15, image: "/assets/sharpener.webp", stock: 0   },
-  { id: 6,  name: "Ruler",        price: 20, image: "/assets/ruler.webp", stock: 60  },
+  { id: 1,  name: "Notebook",     price: 20, image: "/assets/notebook.webp",     stock: 45  },
+  { id: 2,  name: "Pencil",       price: 10, image: "/assets/pencil.webp",       stock: 120 },
+  { id: 3,  name: "Pen",          price: 10, image: "/assets/pen.webp",          stock: 95  },
+  { id: 4,  name: "Eraser",       price: 5,  image: "/assets/eraser.webp",       stock: 80  },
+  { id: 5,  name: "Sharpener",    price: 15, image: "/assets/sharpener.webp",    stock: 0   },
+  { id: 6,  name: "Ruler",        price: 20, image: "/assets/ruler.webp",        stock: 60  },
   { id: 7,  name: "Highlighters", price: 40, image: "/assets/highlighters.webp", stock: 30  },
-  { id: 8,  name: "Glue",         price: 30, image: "/assets/glue.webp", stock: 25  },
-  { id: 9,  name: "Scissors",     price: 25, image: "/assets/scissors.webp", stock: 0   },
-  { id: 10, name: "Crayons",      price: 50, image: "/assets/crayons.webp", stock: 18  },
+  { id: 8,  name: "Glue",         price: 30, image: "/assets/glue.webp",         stock: 25  },
+  { id: 9,  name: "Scissors",     price: 25, image: "/assets/scissors.webp",     stock: 0   },
+  { id: 10, name: "Crayons",      price: 50, image: "/assets/crayons.webp",      stock: 18  },
 ];
 
 const ORDERS_ADMIN: AdminOrder[] = [
@@ -171,20 +105,19 @@ const SUPPLY_ORDERS: SupplyOrder[] = [
   { id: "SUP-004", product: "Highlighters", qty: 150, date: "Mar 6, 2026", status: "pending"    },
 ];
 
-// ─── Shared helpers ───────────────────────────────────────────────────────────
-
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 function StatusBadge({ status }: { status: string }): React.ReactElement {
   const colorMap: Record<string, string> = {
-    completed:        "bg-emerald-100 text-emerald-800 border-emerald-200",
-    delivered:        "bg-emerald-100 text-emerald-800 border-emerald-200",
-    available:        "bg-emerald-100 text-emerald-800 border-emerald-200",
-    processing:       "bg-amber-100 text-amber-800 border-amber-200",
-    "in transit":     "bg-blue-100 text-blue-800 border-blue-200",
-    pending:          "bg-rose-100 text-rose-800 border-rose-200",
-    "out of stock":   "bg-rose-100 text-rose-800 border-rose-200",
-    "ready to pay":   "bg-violet-100 text-violet-800 border-violet-200",
-    "ready to ship":  "bg-sky-100 text-sky-800 border-sky-200",
-    "to receive":     "bg-teal-100 text-teal-800 border-teal-200",
+    completed:       "bg-emerald-100 text-emerald-800 border-emerald-200",
+    delivered:       "bg-emerald-100 text-emerald-800 border-emerald-200",
+    available:       "bg-emerald-100 text-emerald-800 border-emerald-200",
+    processing:      "bg-amber-100 text-amber-800 border-amber-200",
+    "in transit":    "bg-blue-100 text-blue-800 border-blue-200",
+    pending:         "bg-rose-100 text-rose-800 border-rose-200",
+    "out of stock":  "bg-rose-100 text-rose-800 border-rose-200",
+    "ready to pay":  "bg-violet-100 text-violet-800 border-violet-200",
+    "ready to ship": "bg-sky-100 text-sky-800 border-sky-200",
+    "to receive":    "bg-teal-100 text-teal-800 border-teal-200",
   };
   const cls = colorMap[status.toLowerCase()] ?? "bg-pink-100 text-pink-800 border-pink-200";
   return (
@@ -194,8 +127,17 @@ function StatusBadge({ status }: { status: string }): React.ReactElement {
   );
 }
 
-// ─── TopBar ───────────────────────────────────────────────────────────────────
+function PageHeading({ icon, children }: { icon: React.ReactElement; children: React.ReactNode }): React.ReactElement {
+  return (
+    <h1 className="flex items-center gap-2 text-2xl font-bold text-pink-700"
+      style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+      <span className="w-7 h-7 text-pink-500">{icon}</span>
+      {children}
+    </h1>
+  );
+}
 
+// ─── TopBar ───────────────────────────────────────────────────────────────────
 function TopBar({ user, onLogout }: { user: User; onLogout: () => void }): React.ReactElement {
   return (
     <header className="sticky top-0 z-50 bg-gradient-to-r from-pink-600 to-rose-400 shadow-lg shadow-pink-200">
@@ -217,14 +159,8 @@ function TopBar({ user, onLogout }: { user: User; onLogout: () => void }): React
             <span className="text-white text-sm font-medium">{user.name}</span>
             <span className="text-pink-200 text-xs capitalize">({user.role})</span>
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onLogout}
-            className="text-white hover:bg-white/20 gap-1.5"
-          >
-            <ArrowRightOnRectangleIcon className="w-4 h-4" />
-            Log Out
+          <Button variant="ghost" size="sm" onClick={onLogout} className="text-white hover:bg-white/20 gap-1.5">
+            <ArrowRightOnRectangleIcon className="w-4 h-4" /> Log Out
           </Button>
         </div>
       </div>
@@ -233,27 +169,14 @@ function TopBar({ user, onLogout }: { user: User; onLogout: () => void }): React
 }
 
 // ─── SideNav ──────────────────────────────────────────────────────────────────
-
-function SideNav({ items, active, onSelect }: {
-  items: NavItem[];
-  active: string;
-  onSelect: (key: string) => void;
-}): React.ReactElement {
+function SideNav({ items, active, onSelect }: { items: NavItem[]; active: string; onSelect: (key: string) => void }): React.ReactElement {
   return (
     <aside className="w-56 shrink-0 bg-pink-50/60 border-r border-pink-100 min-h-[calc(100vh-60px)] py-6 flex flex-col gap-1">
       {items.map((it) => (
-        <button
-          key={it.key}
-          onClick={() => onSelect(it.key)}
+        <button key={it.key} onClick={() => onSelect(it.key)}
           className={`flex items-center gap-3 mx-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150
-            ${active === it.key
-              ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md shadow-pink-200"
-              : "text-gray-500 hover:bg-pink-100 hover:text-pink-700"
-            }`}
-        >
-          <span className={`w-5 h-5 ${active === it.key ? "text-white" : "text-pink-400"}`}>
-            {it.icon}
-          </span>
+            ${active === it.key ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md shadow-pink-200" : "text-gray-500 hover:bg-pink-100 hover:text-pink-700"}`}>
+          <span className={`w-5 h-5 ${active === it.key ? "text-white" : "text-pink-400"}`}>{it.icon}</span>
           {it.label}
         </button>
       ))}
@@ -264,7 +187,6 @@ function SideNav({ items, active, onSelect }: {
 // ════════════════════════════════════════════════════════════════════════════
 // LOGIN PAGE
 // ════════════════════════════════════════════════════════════════════════════
-
 function LoginPage({ onLogin }: { onLogin: (u: User) => void }): React.ReactElement {
   const [role, setRole]   = useState<Role>("customer");
   const [email, setEmail] = useState<string>("");
@@ -286,7 +208,6 @@ function LoginPage({ onLogin }: { onLogin: (u: User) => void }): React.ReactElem
   };
 
   const roles: Role[] = ["customer", "admin", "supplier"];
-
   const roleIcons: Record<Role, React.ReactElement> = {
     customer: <ShoppingBagIcon className="w-4 h-4" />,
     admin:    <ChartBarIcon    className="w-4 h-4" />,
@@ -297,7 +218,6 @@ function LoginPage({ onLogin }: { onLogin: (u: User) => void }): React.ReactElem
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-pink-100 flex items-center justify-center p-4">
       <div className="fixed top-0 left-0 w-72 h-72 bg-pink-200/40 rounded-full blur-3xl pointer-events-none" />
       <div className="fixed bottom-0 right-0 w-64 h-64 bg-rose-200/40 rounded-full blur-3xl pointer-events-none" />
-
       <Card className="w-full max-w-md shadow-2xl shadow-pink-200/50 border-pink-100 relative z-10">
         <CardHeader className="text-center pb-2">
           <div className="mx-auto mb-4 w-16 h-16 bg-gradient-to-br from-pink-500 to-rose-500 rounded-2xl flex items-center justify-center shadow-lg shadow-pink-300">
@@ -308,64 +228,44 @@ function LoginPage({ onLogin }: { onLogin: (u: User) => void }): React.ReactElem
           </CardTitle>
           <p className="text-gray-400 text-sm mt-1">Ash-sentials that make school extra special!</p>
         </CardHeader>
-
         <CardContent className="pt-4 space-y-5">
           <div className="grid grid-cols-3 gap-2 bg-pink-50 p-1.5 rounded-xl">
             {roles.map((r) => (
-              <button
-                key={r}
-                onClick={() => setRole(r)}
+              <button key={r} onClick={() => setRole(r)}
                 className={`flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-bold capitalize transition-all duration-150
-                  ${role === r
-                    ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md"
-                    : "text-gray-400 hover:text-pink-500"
-                  }`}
-              >
-                {roleIcons[r]}
-                {r}
+                  ${role === r ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md" : "text-gray-400 hover:text-pink-500"}`}>
+                {roleIcons[r]}{r}
               </button>
             ))}
           </div>
-
           <div className="space-y-3">
             <div className="space-y-1.5">
               <Label className="text-gray-600 text-xs font-semibold uppercase tracking-wide">Email</Label>
               <div className="relative">
                 <EnvelopeIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-pink-300" />
-                <Input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="pl-10 border-pink-200 focus:border-pink-400 focus-visible:ring-pink-300"
-                  placeholder="your@email.com"
-                />
+                <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+                  className="pl-10 border-pink-200 focus:border-pink-400 focus-visible:ring-pink-300" placeholder="your@email.com" />
               </div>
             </div>
             <div className="space-y-1.5">
               <Label className="text-gray-600 text-xs font-semibold uppercase tracking-wide">Password</Label>
               <div className="relative">
                 <StarIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-pink-300" />
-                <Input
-                  type="password"
-                  value={pass}
-                  onChange={(e) => setPass(e.target.value)}
-                  className="pl-10 border-pink-200 focus:border-pink-400 focus-visible:ring-pink-300"
-                  placeholder="••••••••"
-                  onKeyDown={(e) => e.key === "Enter" && handle()}
-                />
+                <Input type="password" value={pass} onChange={(e) => setPass(e.target.value)}
+                  className="pl-10 border-pink-200 focus:border-pink-400 focus-visible:ring-pink-300" placeholder="••••••••"
+                  onKeyDown={(e) => e.key === "Enter" && handle()} />
               </div>
             </div>
           </div>
-
-          <Button
-            onClick={handle}
-            className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold shadow-lg shadow-pink-200 h-11"
-          >
+          <Button onClick={handle}
+            className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold shadow-lg shadow-pink-200 h-11">
             <HeartIcon className="w-4 h-4 mr-2" />
             Log In as {role.charAt(0).toUpperCase() + role.slice(1)}
           </Button>
-
-          <p className="text-center text-xs text-gray-400">✨ Demo hints shown on wrong login</p>
+          <p className="text-center text-xs text-gray-400 flex items-center justify-center gap-1.5">
+            <SparklesIcon className="w-3.5 h-3.5 text-pink-300" />
+            Demo hints shown on wrong login
+          </p>
         </CardContent>
       </Card>
     </div>
@@ -375,7 +275,6 @@ function LoginPage({ onLogin }: { onLogin: (u: User) => void }): React.ReactElem
 // ════════════════════════════════════════════════════════════════════════════
 // CUSTOMER PORTAL
 // ════════════════════════════════════════════════════════════════════════════
-
 function CustomerPortal({ user, onLogout }: { user: User; onLogout: () => void }): React.ReactElement {
   const [tab, setTab]           = useState<string>("profile");
   const [cart, setCart]         = useState<CartItem[]>([]);
@@ -392,14 +291,10 @@ function CustomerPortal({ user, onLogout }: { user: User; onLogout: () => void }
   const addToCart = (p: Product): void =>
     setCart((c) => {
       const ex = c.find((x) => x.id === p.id);
-      return ex
-        ? c.map((x) => x.id === p.id ? { ...x, qty: x.qty + 1 } : x)
-        : [...c, { ...p, qty: 1 }];
+      return ex ? c.map((x) => x.id === p.id ? { ...x, qty: x.qty + 1 } : x) : [...c, { ...p, qty: 1 }];
     });
-
   const removeFromCart = (id: number): void => setCart((c) => c.filter((x) => x.id !== id));
   const cartTotal = cart.reduce((a, b) => a + b.price * b.qty, 0);
-
   const checkout = (): void => {
     if (!cart.length) return;
     setReceipt({ items: [...cart], total: cartTotal, date: new Date().toLocaleString() });
@@ -420,19 +315,15 @@ function CustomerPortal({ user, onLogout }: { user: User; onLogout: () => void }
         <SideNav items={navItems} active={tab} onSelect={setTab} />
         <main className="flex-1 p-8 overflow-y-auto">
 
-          {/* PROFILE */}
+          {/* ── PROFILE ── */}
           {tab === "profile" && (
             <div className="space-y-6">
-              <h1 className="text-2xl font-bold text-pink-700" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
-                My Profile 💗
-              </h1>
+              <PageHeading icon={<UserIcon />}>My Profile</PageHeading>
               <div className="grid grid-cols-2 gap-4">
                 <Card className="border-pink-100">
                   <CardContent className="pt-6">
                     <Avatar className="w-14 h-14 mb-4">
-                      <AvatarFallback className="bg-pink-100 text-pink-600 text-xl font-bold">
-                        {user.name[0]}
-                      </AvatarFallback>
+                      <AvatarFallback className="bg-pink-100 text-pink-600 text-xl font-bold">{user.name[0]}</AvatarFallback>
                     </Avatar>
                     <p className="font-bold text-xl text-gray-800">{user.name}</p>
                     <div className="mt-3 space-y-1.5 text-sm text-gray-500">
@@ -442,7 +333,6 @@ function CustomerPortal({ user, onLogout }: { user: User; onLogout: () => void }
                     </div>
                   </CardContent>
                 </Card>
-
                 <Card className="bg-gradient-to-br from-pink-500 to-rose-500 border-0 text-white">
                   <CardContent className="pt-6">
                     <div className="flex items-center gap-2 mb-2">
@@ -450,7 +340,9 @@ function CustomerPortal({ user, onLogout }: { user: User; onLogout: () => void }
                       <span className="font-semibold text-pink-100 text-sm">Reward Points</span>
                     </div>
                     <p className="text-6xl font-black">320</p>
-                    <p className="text-pink-200 text-sm mt-2">Keep shopping to earn more! 🎀</p>
+                    <div className="flex items-center gap-1.5 text-pink-200 text-sm mt-2">
+                      <GiftIcon className="w-4 h-4" /> Keep shopping to earn more!
+                    </div>
                   </CardContent>
                 </Card>
               </div>
@@ -501,13 +393,10 @@ function CustomerPortal({ user, onLogout }: { user: User; onLogout: () => void }
             </div>
           )}
 
-          {/* PRODUCTS */}
+          {/* ── PRODUCTS ── */}
           {tab === "products" && (
             <div className="space-y-6">
-            <h1 className="flex items-center gap-2 ...">
-              <ShoppingBagIcon className="w-7 h-7 text-pink-500" />
-              Our Products
-            </h1>
+              <PageHeading icon={<ShoppingBagIcon />}>Our Products</PageHeading>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                 {PRODUCTS.map(p => (
                   <Card key={p.id} className={`border-pink-100 hover:shadow-md hover:shadow-pink-100 transition-shadow relative overflow-hidden ${p.stock === 0 ? "opacity-70" : ""}`}>
@@ -518,22 +407,14 @@ function CustomerPortal({ user, onLogout }: { user: User; onLogout: () => void }
                     )}
                     <CardContent className="pt-4 text-center">
                       <div className="w-full h-32 mb-3 rounded-lg overflow-hidden bg-pink-50">
-                        <img
-                          src={p.image}
-                          alt={p.name}
-                          className="w-full h-full object-cover"
-                          onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=300&h=300&fit=crop"; }}
-                        />
+                        <img src={p.image} alt={p.name} className="w-full h-full object-cover"
+                          onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=300&h=300&fit=crop"; }} />
                       </div>
                       <p className="font-bold text-gray-800 text-sm">{p.name}</p>
                       <p className="text-pink-600 font-black text-xl mt-1">₱{p.price}</p>
-                      <Button
-                        size="sm"
-                        disabled={p.stock === 0}
-                        onClick={() => p.stock > 0 && addToCart(p)}
+                      <Button size="sm" disabled={p.stock === 0} onClick={() => p.stock > 0 && addToCart(p)}
                         className={`w-full mt-3 text-xs font-bold ${p.stock > 0 ? "bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white" : ""}`}
-                        variant={p.stock === 0 ? "outline" : "default"}
-                      >
+                        variant={p.stock === 0 ? "outline" : "default"}>
                         <ShoppingCartIcon className="w-3.5 h-3.5 mr-1" />
                         {p.stock === 0 ? "Unavailable" : "Add to Cart"}
                       </Button>
@@ -544,13 +425,10 @@ function CustomerPortal({ user, onLogout }: { user: User; onLogout: () => void }
             </div>
           )}
 
-          {/* CART */}
+          {/* ── CART ── */}
           {tab === "cart" && (
             <div className="space-y-6">
-              <h1 className="text-2xl font-bold text-pink-700" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
-                My Cart 🛒
-              </h1>
-
+              <PageHeading icon={<ShoppingCartIcon />}>My Cart</PageHeading>
               {receipt ? (
                 <Card className="max-w-md border-pink-100 shadow-lg shadow-pink-100">
                   <CardHeader className="text-center">
@@ -578,11 +456,11 @@ function CustomerPortal({ user, onLogout }: { user: User; onLogout: () => void }
                       <span>TOTAL</span>
                       <span className="text-pink-600">₱{receipt.total}</span>
                     </div>
-                    <p className="text-center text-pink-500 font-semibold text-sm mt-4">🎀 Thank you for shopping with us!</p>
-                    <Button
-                      className="w-full mt-4 bg-gradient-to-r from-pink-500 to-rose-500 text-white"
-                      onClick={() => setReceipt(null)}
-                    >
+                    <div className="flex items-center justify-center gap-2 text-pink-500 font-semibold text-sm mt-4">
+                      <HeartSolid className="w-4 h-4 text-pink-400" />
+                      Thank you for shopping with us!
+                    </div>
+                    <Button className="w-full mt-4 bg-gradient-to-r from-pink-500 to-rose-500 text-white" onClick={() => setReceipt(null)}>
                       Continue Shopping
                     </Button>
                   </CardContent>
@@ -623,12 +501,8 @@ function CustomerPortal({ user, onLogout }: { user: User; onLogout: () => void }
                             <TableCell className="font-bold">×{i.qty}</TableCell>
                             <TableCell className="font-black text-pink-600">₱{i.price * i.qty}</TableCell>
                             <TableCell>
-                              <Button
-                                size="icon"
-                                variant="ghost"
-                                onClick={() => removeFromCart(i.id)}
-                                className="w-7 h-7 text-rose-400 hover:text-rose-600 hover:bg-rose-50"
-                              >
+                              <Button size="icon" variant="ghost" onClick={() => removeFromCart(i.id)}
+                                className="w-7 h-7 text-rose-400 hover:text-rose-600 hover:bg-rose-50">
                                 <TrashIcon className="w-4 h-4" />
                               </Button>
                             </TableCell>
@@ -637,7 +511,6 @@ function CustomerPortal({ user, onLogout }: { user: User; onLogout: () => void }
                       </TableBody>
                     </Table>
                   </Card>
-
                   <Card className="border-pink-100 self-start">
                     <CardHeader>
                       <CardTitle className="text-pink-700 text-lg" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>Order Summary</CardTitle>
@@ -649,10 +522,7 @@ function CustomerPortal({ user, onLogout }: { user: User; onLogout: () => void }
                         <span>Total</span>
                         <span className="text-pink-600">₱{cartTotal}</span>
                       </div>
-                      <Button
-                        className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold shadow-md shadow-pink-200 h-11"
-                        onClick={checkout}
-                      >
+                      <Button className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold shadow-md shadow-pink-200 h-11" onClick={checkout}>
                         <CreditCardIcon className="w-4 h-4 mr-2" /> Checkout
                       </Button>
                     </CardContent>
@@ -662,12 +532,10 @@ function CustomerPortal({ user, onLogout }: { user: User; onLogout: () => void }
             </div>
           )}
 
-          {/* ABOUT */}
+          {/* ── ABOUT ── */}
           {tab === "about" && (
             <div className="space-y-6">
-              <h1 className="text-2xl font-bold text-pink-700" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
-                About Us 💌
-              </h1>
+              <PageHeading icon={<HeartIcon />}>About Us</PageHeading>
               <div className="grid grid-cols-2 gap-4">
                 <Card className="border-pink-100">
                   <CardContent className="pt-6 space-y-4">
@@ -684,14 +552,19 @@ function CustomerPortal({ user, onLogout }: { user: User; onLogout: () => void }
                       </div>
                     </div>
                     <div className="flex flex-wrap gap-2 pt-1">
-                      {["📘 Facebook", "📸 Instagram", "🎵 TikTok"].map(s => (
-                        <Badge key={s} variant="outline" className="text-pink-600 border-pink-200 bg-pink-50">{s}</Badge>
+                      {[
+                        { label: "Facebook",  icon: <ChatBubbleLeftRightIcon className="w-3.5 h-3.5" /> },
+                        { label: "Instagram", icon: <HeartIcon               className="w-3.5 h-3.5" /> },
+                        { label: "TikTok",    icon: <SparklesIcon            className="w-3.5 h-3.5" /> },
+                      ].map(s => (
+                        <Badge key={s.label} variant="outline" className="flex items-center gap-1 text-pink-600 border-pink-200 bg-pink-50">
+                          {s.icon}{s.label}
+                        </Badge>
                       ))}
                     </div>
                     <p className="text-xs text-gray-400">@schoolashentials on all platforms</p>
                   </CardContent>
                 </Card>
-
                 <Card className="border-pink-100">
                   <CardHeader>
                     <CardTitle className="text-pink-700 text-lg flex items-center gap-2" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
@@ -706,16 +579,11 @@ function CustomerPortal({ user, onLogout }: { user: User; onLogout: () => void }
                       </div>
                     ) : (
                       <div className="space-y-3">
-                        <Textarea
-                          value={feedback}
-                          onChange={(e) => setFeedback(e.target.value)}
-                          placeholder="Share your thoughts with us... ✨"
-                          className="border-pink-200 focus-visible:ring-pink-300 resize-none h-28"
-                        />
-                        <Button
-                          className="w-full bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold"
-                          onClick={() => { if (feedback) setFbSent(true); }}
-                        >
+                        <Textarea value={feedback} onChange={(e) => setFeedback(e.target.value)}
+                          placeholder="Share your thoughts with us..."
+                          className="border-pink-200 focus-visible:ring-pink-300 resize-none h-28" />
+                        <Button className="w-full bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold"
+                          onClick={() => { if (feedback) setFbSent(true); }}>
                           <PaperAirplaneIcon className="w-4 h-4 mr-2" /> Send Feedback
                         </Button>
                       </div>
@@ -735,7 +603,6 @@ function CustomerPortal({ user, onLogout }: { user: User; onLogout: () => void }
 // ════════════════════════════════════════════════════════════════════════════
 // ADMIN PORTAL
 // ════════════════════════════════════════════════════════════════════════════
-
 function AdminPortal({ user, onLogout }: { user: User; onLogout: () => void }): React.ReactElement {
   const [tab, setTab]             = useState<string>("dashboard");
   const [inventory, setInventory] = useState<Product[]>(PRODUCTS.map(p => ({ ...p })));
@@ -751,7 +618,6 @@ function AdminPortal({ user, onLogout }: { user: User; onLogout: () => void }): 
 
   const updateStatus = (id: string, status: AdminOrder["status"]): void =>
     setOrders(o => o.map(x => x.id === id ? { ...x, status } : x));
-
   const updateStock = (id: number, delta: number): void =>
     setInventory(inv => inv.map(p => p.id === id ? { ...p, stock: Math.max(0, p.stock + delta) } : p));
 
@@ -759,17 +625,17 @@ function AdminPortal({ user, onLogout }: { user: User; onLogout: () => void }): 
   const pendingCount = orders.filter(o => o.status === "pending").length;
 
   const statCards = [
-    { label: "Total Products",  value: PRODUCTS.length,   icon: <CubeIcon className="w-6 h-6" />,                color: "from-pink-500 to-rose-500",    bg: "bg-pink-50",   text: "text-pink-600"   },
+    { label: "Total Products",  value: PRODUCTS.length,   icon: <CubeIcon className="w-6 h-6" />,                 color: "from-pink-500 to-rose-500",    bg: "bg-pink-50",   text: "text-pink-600"   },
     { label: "Total Orders",    value: orders.length,     icon: <ClipboardDocumentListIcon className="w-6 h-6" />, color: "from-violet-500 to-purple-500", bg: "bg-violet-50", text: "text-violet-600" },
-    { label: "Total Customers", value: 24,                icon: <UsersIcon className="w-6 h-6" />,                color: "from-teal-500 to-cyan-500",    bg: "bg-teal-50",   text: "text-teal-600"   },
-    { label: "Total Sales",     value: `₱${totalSales}`, icon: <CurrencyDollarIcon className="w-6 h-6" />,       color: "from-amber-500 to-orange-500", bg: "bg-amber-50",  text: "text-amber-600"  },
+    { label: "Total Customers", value: 24,                icon: <UsersIcon className="w-6 h-6" />,                 color: "from-teal-500 to-cyan-500",    bg: "bg-teal-50",   text: "text-teal-600"   },
+    { label: "Total Sales",     value: `₱${totalSales}`, icon: <CurrencyDollarIcon className="w-6 h-6" />,        color: "from-amber-500 to-orange-500", bg: "bg-amber-50",  text: "text-amber-600"  },
   ];
 
   const alertItems = [
-    { msg: `${pendingCount} pending orders`, icon: <ExclamationCircleIcon className="w-4 h-4 text-amber-500" /> },
-    { msg: "Sharpener out of stock",         icon: <XCircleIcon           className="w-4 h-4 text-rose-500"  /> },
-    { msg: "Scissors out of stock",          icon: <XCircleIcon           className="w-4 h-4 text-rose-500"  /> },
-    { msg: "5 suppliers active",             icon: <CheckCircleIcon       className="w-4 h-4 text-emerald-500" /> },
+    { msg: `${pendingCount} pending orders`, icon: <ExclamationCircleIcon className="w-4 h-4 text-amber-500"  /> },
+    { msg: "Sharpener out of stock",         icon: <XCircleIcon           className="w-4 h-4 text-rose-500"   /> },
+    { msg: "Scissors out of stock",          icon: <XCircleIcon           className="w-4 h-4 text-rose-500"   /> },
+    { msg: "5 suppliers active",             icon: <CheckCircleIcon       className="w-4 h-4 text-emerald-500"/> },
   ];
 
   return (
@@ -779,25 +645,21 @@ function AdminPortal({ user, onLogout }: { user: User; onLogout: () => void }): 
         <SideNav items={navItems} active={tab} onSelect={setTab} />
         <main className="flex-1 p-8 overflow-y-auto">
 
-          {/* DASHBOARD */}
+          {/* ── DASHBOARD ── */}
           {tab === "dashboard" && (
             <div className="space-y-6">
-              <h1 className="text-2xl font-bold text-pink-700" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>Dashboard 📊</h1>
-
+              <PageHeading icon={<ChartPieIcon />}>Dashboard</PageHeading>
               <div className="grid grid-cols-4 gap-4">
                 {statCards.map(s => (
                   <Card key={s.label} className="border-0 shadow-sm overflow-hidden">
                     <CardContent className={`pt-5 pb-4 ${s.bg}`}>
-                      <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${s.color} flex items-center justify-center text-white mb-3 shadow-sm`}>
-                        {s.icon}
-                      </div>
+                      <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${s.color} flex items-center justify-center text-white mb-3 shadow-sm`}>{s.icon}</div>
                       <p className={`text-2xl font-black ${s.text}`}>{s.value}</p>
                       <p className="text-xs text-gray-500 font-semibold mt-1">{s.label}</p>
                     </CardContent>
                   </Card>
                 ))}
               </div>
-
               <div className="grid grid-cols-[2fr_1fr] gap-4">
                 <Card className="border-pink-100">
                   <CardHeader>
@@ -813,16 +675,13 @@ function AdminPortal({ user, onLogout }: { user: User; onLogout: () => void }): 
                           <span className="text-pink-600">₱{r.sales}</span>
                         </div>
                         <div className="h-2.5 bg-pink-100 rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-gradient-to-r from-pink-400 to-rose-500 rounded-full transition-all duration-700"
-                            style={{ width: `${(r.sales / 2000) * 100}%` }}
-                          />
+                          <div className="h-full bg-gradient-to-r from-pink-400 to-rose-500 rounded-full transition-all duration-700"
+                            style={{ width: `${(r.sales / 2000) * 100}%` }} />
                         </div>
                       </div>
                     ))}
                   </CardContent>
                 </Card>
-
                 <Card className="border-pink-100">
                   <CardHeader>
                     <CardTitle className="text-pink-700 flex items-center gap-2" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
@@ -832,9 +691,7 @@ function AdminPortal({ user, onLogout }: { user: User; onLogout: () => void }): 
                   <CardContent className="space-y-2">
                     {alertItems.map((a, i) => (
                       <Alert key={i} className="py-2.5 border-pink-100 bg-pink-50/50">
-                        <AlertDescription className="flex items-center gap-2 text-sm">
-                          {a.icon} {a.msg}
-                        </AlertDescription>
+                        <AlertDescription className="flex items-center gap-2 text-sm">{a.icon} {a.msg}</AlertDescription>
                       </Alert>
                     ))}
                     <p className="text-xs text-gray-400 pt-1 flex items-center gap-1">
@@ -846,10 +703,10 @@ function AdminPortal({ user, onLogout }: { user: User; onLogout: () => void }): 
             </div>
           )}
 
-          {/* ORDERS */}
+          {/* ── ORDERS ── */}
           {tab === "orders" && (
             <div className="space-y-6">
-              <h1 className="text-2xl font-bold text-pink-700" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>Orders 📋</h1>
+              <PageHeading icon={<ClipboardIcon />}>Orders</PageHeading>
               <Card className="border-pink-100">
                 <Table>
                   <TableHeader>
@@ -868,13 +725,8 @@ function AdminPortal({ user, onLogout }: { user: User; onLogout: () => void }): 
                         <TableCell className="font-bold text-pink-600">₱{o.total}</TableCell>
                         <TableCell><StatusBadge status={o.status} /></TableCell>
                         <TableCell>
-                          <Select
-                            value={o.status}
-                            onValueChange={(v) => updateStatus(o.id, v as AdminOrder["status"])}
-                          >
-                            <SelectTrigger className="w-32 h-8 text-xs border-pink-200">
-                              <SelectValue />
-                            </SelectTrigger>
+                          <Select value={o.status} onValueChange={(v) => updateStatus(o.id, v as AdminOrder["status"])}>
+                            <SelectTrigger className="w-32 h-8 text-xs border-pink-200"><SelectValue /></SelectTrigger>
                             <SelectContent>
                               {(["pending", "processing", "completed"] as AdminOrder["status"][]).map(s => (
                                 <SelectItem key={s} value={s} className="text-xs capitalize">{s}</SelectItem>
@@ -890,10 +742,10 @@ function AdminPortal({ user, onLogout }: { user: User; onLogout: () => void }): 
             </div>
           )}
 
-          {/* INVENTORY */}
+          {/* ── INVENTORY ── */}
           {tab === "inventory" && (
             <div className="space-y-6">
-              <h1 className="text-2xl font-bold text-pink-700" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>Inventory 📦</h1>
+              <PageHeading icon={<ArchiveBoxIcon />}>Inventory</PageHeading>
               <Card className="border-pink-100">
                 <Table>
                   <TableHeader>
@@ -916,25 +768,13 @@ function AdminPortal({ user, onLogout }: { user: User; onLogout: () => void }): 
                         </TableCell>
                         <TableCell className="font-bold text-pink-600">₱{p.price}</TableCell>
                         <TableCell className="font-bold">{p.stock}</TableCell>
-                        <TableCell>
-                          <StatusBadge status={p.stock === 0 ? "out of stock" : "available"} />
-                        </TableCell>
+                        <TableCell><StatusBadge status={p.stock === 0 ? "out of stock" : "available"} /></TableCell>
                         <TableCell>
                           <div className="flex gap-1.5">
-                            <Button
-                              size="icon"
-                              variant="outline"
-                              onClick={() => updateStock(p.id, -1)}
-                              className="w-7 h-7 border-rose-200 text-rose-500 hover:bg-rose-50"
-                            >
+                            <Button size="icon" variant="outline" onClick={() => updateStock(p.id, -1)} className="w-7 h-7 border-rose-200 text-rose-500 hover:bg-rose-50">
                               <MinusIcon className="w-3.5 h-3.5" />
                             </Button>
-                            <Button
-                              size="icon"
-                              variant="outline"
-                              onClick={() => updateStock(p.id, +1)}
-                              className="w-7 h-7 border-emerald-200 text-emerald-600 hover:bg-emerald-50"
-                            >
+                            <Button size="icon" variant="outline" onClick={() => updateStock(p.id, +1)} className="w-7 h-7 border-emerald-200 text-emerald-600 hover:bg-emerald-50">
                               <PlusIcon className="w-3.5 h-3.5" />
                             </Button>
                           </div>
@@ -947,18 +787,16 @@ function AdminPortal({ user, onLogout }: { user: User; onLogout: () => void }): 
             </div>
           )}
 
-          {/* MESSAGES */}
+          {/* ── MESSAGES ── */}
           {tab === "messages" && (
             <div className="space-y-6">
-              <h1 className="text-2xl font-bold text-pink-700" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>Messages 💬</h1>
+              <PageHeading icon={<InboxIcon />}>Messages</PageHeading>
               <div className="space-y-3">
                 {messages.map((m, i) => (
                   <Card key={i} className={`border-pink-100 ${m.unread ? "ring-1 ring-pink-300 shadow-sm shadow-pink-100" : ""}`}>
                     <CardContent className="py-4 flex items-center gap-4">
                       <Avatar>
-                        <AvatarFallback className="bg-gradient-to-br from-pink-400 to-rose-500 text-white font-bold">
-                          {m.from[0]}
-                        </AvatarFallback>
+                        <AvatarFallback className="bg-gradient-to-br from-pink-400 to-rose-500 text-white font-bold">{m.from[0]}</AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
                         <div className="flex justify-between items-center mb-1">
@@ -984,7 +822,6 @@ function AdminPortal({ user, onLogout }: { user: User; onLogout: () => void }): 
 // ════════════════════════════════════════════════════════════════════════════
 // SUPPLIER PORTAL
 // ════════════════════════════════════════════════════════════════════════════
-
 function SupplierPortal({ user, onLogout }: { user: User; onLogout: () => void }): React.ReactElement {
   const [tab, setTab]  = useState<string>("dashboard");
   const [supplyOrders] = useState<SupplyOrder[]>(SUPPLY_ORDERS);
@@ -998,11 +835,11 @@ function SupplierPortal({ user, onLogout }: { user: User; onLogout: () => void }
   ];
 
   const supplyItems: SupplyItem[] = [
-    { name: "Notebook",     supplied: 200, needed: 50,  image: "/assets/notebook.webp" },
-    { name: "Pencil",       supplied: 500, needed: 0,   image: "/assets/pencil.webp" },
-    { name: "Crayons",      supplied: 100, needed: 80,  image: "/assets/crayons.webp" },
+    { name: "Notebook",     supplied: 200, needed: 50,  image: "/assets/notebook.webp"     },
+    { name: "Pencil",       supplied: 500, needed: 0,   image: "/assets/pencil.webp"       },
+    { name: "Crayons",      supplied: 100, needed: 80,  image: "/assets/crayons.webp"      },
     { name: "Highlighters", supplied: 150, needed: 120, image: "/assets/highlighters.webp" },
-    { name: "Sharpener",    supplied: 0,   needed: 200, image: "/assets/sharpener.webp" },
+    { name: "Sharpener",    supplied: 0,   needed: 200, image: "/assets/sharpener.webp"    },
   ];
 
   const totalRevenue    = 18450;
@@ -1027,25 +864,21 @@ function SupplierPortal({ user, onLogout }: { user: User; onLogout: () => void }
         <SideNav items={navItems} active={tab} onSelect={setTab} />
         <main className="flex-1 p-8 overflow-y-auto">
 
-          {/* DASHBOARD */}
+          {/* ── DASHBOARD ── */}
           {tab === "dashboard" && (
             <div className="space-y-6">
-              <h1 className="text-2xl font-bold text-pink-700" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>Supplier Dashboard 📊</h1>
-
+              <PageHeading icon={<ChartPieIcon />}>Supplier Dashboard</PageHeading>
               <div className="grid grid-cols-3 gap-4">
                 {statCards.map(s => (
                   <Card key={s.label} className="border-0 shadow-sm overflow-hidden">
                     <CardContent className={`pt-5 pb-4 ${s.bg}`}>
-                      <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${s.color} flex items-center justify-center text-white mb-3 shadow-sm`}>
-                        {s.icon}
-                      </div>
+                      <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${s.color} flex items-center justify-center text-white mb-3 shadow-sm`}>{s.icon}</div>
                       <p className={`text-2xl font-black ${s.text}`}>{s.value}</p>
                       <p className="text-xs text-gray-500 font-semibold mt-1">{s.label}</p>
                     </CardContent>
                   </Card>
                 ))}
               </div>
-
               <div className="grid grid-cols-2 gap-4">
                 <Card className="border-pink-100">
                   <CardHeader>
@@ -1067,7 +900,6 @@ function SupplierPortal({ user, onLogout }: { user: User; onLogout: () => void }
                     </div>
                   </CardContent>
                 </Card>
-
                 <Card className="border-pink-100">
                   <CardHeader>
                     <CardTitle className="text-pink-700 text-base flex items-center gap-2" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
@@ -1083,10 +915,8 @@ function SupplierPortal({ user, onLogout }: { user: User; onLogout: () => void }
                         <div className="flex-1">
                           <p className="text-xs font-semibold text-gray-700 mb-1">{i.name}</p>
                           <div className="h-2 bg-pink-100 rounded-full overflow-hidden">
-                            <div
-                              className="h-full bg-gradient-to-r from-pink-400 to-rose-500 rounded-full"
-                              style={{ width: `${Math.min(100, (i.supplied / (i.supplied + i.needed + 1)) * 100)}%` }}
-                            />
+                            <div className="h-full bg-gradient-to-r from-pink-400 to-rose-500 rounded-full"
+                              style={{ width: `${Math.min(100, (i.supplied / (i.supplied + i.needed + 1)) * 100)}%` }} />
                           </div>
                         </div>
                         <span className="text-xs font-bold text-pink-600 shrink-0">{i.supplied}</span>
@@ -1098,10 +928,10 @@ function SupplierPortal({ user, onLogout }: { user: User; onLogout: () => void }
             </div>
           )}
 
-          {/* INVENTORY */}
+          {/* ── INVENTORY ── */}
           {tab === "inventory" && (
             <div className="space-y-6">
-              <h1 className="text-2xl font-bold text-pink-700" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>Inventory to Supply 📦</h1>
+              <PageHeading icon={<ArchiveBoxIcon />}>Inventory to Supply</PageHeading>
               <Card className="border-pink-100">
                 <Table>
                   <TableHeader>
@@ -1137,10 +967,10 @@ function SupplierPortal({ user, onLogout }: { user: User; onLogout: () => void }
             </div>
           )}
 
-          {/* SALES REPORT */}
+          {/* ── SALES REPORT ── */}
           {tab === "sales" && (
             <div className="space-y-6">
-              <h1 className="text-2xl font-bold text-pink-700" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>Sales Report 📈</h1>
+              <PageHeading icon={<ArrowTrendingUpIcon />}>Sales Report</PageHeading>
               <div className="grid grid-cols-2 gap-4">
                 <Card className="border-pink-100">
                   <CardHeader>
@@ -1156,10 +986,8 @@ function SupplierPortal({ user, onLogout }: { user: User; onLogout: () => void }
                           <span className="text-pink-600">₱{r.rev.toLocaleString()}</span>
                         </div>
                         <div className="h-3 bg-pink-100 rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-gradient-to-r from-pink-400 to-rose-500 rounded-full transition-all duration-700"
-                            style={{ width: `${(r.rev / 9000) * 100}%` }}
-                          />
+                          <div className="h-full bg-gradient-to-r from-pink-400 to-rose-500 rounded-full transition-all duration-700"
+                            style={{ width: `${(r.rev / 9000) * 100}%` }} />
                         </div>
                       </div>
                     ))}
@@ -1169,7 +997,6 @@ function SupplierPortal({ user, onLogout }: { user: User; onLogout: () => void }
                     </div>
                   </CardContent>
                 </Card>
-
                 <Card className="border-pink-100">
                   <CardHeader>
                     <CardTitle className="text-pink-700 flex items-center gap-2" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
@@ -1194,18 +1021,16 @@ function SupplierPortal({ user, onLogout }: { user: User; onLogout: () => void }
             </div>
           )}
 
-          {/* MESSAGES */}
+          {/* ── MESSAGES ── */}
           {tab === "messages" && (
             <div className="space-y-6">
-              <h1 className="text-2xl font-bold text-pink-700" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>Messages 💬</h1>
+              <PageHeading icon={<InboxIcon />}>Messages</PageHeading>
               <div className="space-y-3">
                 {supplierMessages.map((m, i) => (
                   <Card key={i} className={`border-pink-100 ${m.unread ? "ring-1 ring-pink-300 shadow-sm shadow-pink-100" : ""}`}>
                     <CardContent className="py-4 flex items-center gap-4">
                       <Avatar>
-                        <AvatarFallback className="bg-gradient-to-br from-pink-400 to-rose-500 text-white font-bold">
-                          {m.from[0]}
-                        </AvatarFallback>
+                        <AvatarFallback className="bg-gradient-to-br from-pink-400 to-rose-500 text-white font-bold">{m.from[0]}</AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
                         <div className="flex justify-between items-center mb-1">
@@ -1231,14 +1056,11 @@ function SupplierPortal({ user, onLogout }: { user: User; onLogout: () => void }
 // ════════════════════════════════════════════════════════════════════════════
 // ROOT
 // ════════════════════════════════════════════════════════════════════════════
-
 export default function App(): React.ReactElement {
   const [user, setUser] = useState<User | null>(null);
-
-  if (!user)                    return <LoginPage    onLogin={setUser} />;
+  if (!user)                    return <LoginPage      onLogin={setUser} />;
   if (user.role === "customer") return <CustomerPortal user={user} onLogout={() => setUser(null)} />;
   if (user.role === "admin")    return <AdminPortal    user={user} onLogout={() => setUser(null)} />;
   if (user.role === "supplier") return <SupplierPortal user={user} onLogout={() => setUser(null)} />;
-
   return <LoginPage onLogin={setUser} />;
 }
