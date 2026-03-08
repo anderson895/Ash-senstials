@@ -77,7 +77,7 @@ interface Product {
   id: number;
   name: string;
   price: number;
-  emoji: string;
+  image: string;
   stock: number;
 }
 
@@ -125,7 +125,7 @@ interface SupplyItem {
   name: string;
   supplied: number;
   needed: number;
-  emoji: string;
+  image: string;
 }
 
 interface NavItem {
@@ -137,16 +137,16 @@ interface NavItem {
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
 const PRODUCTS: Product[] = [
-  { id: 1,  name: "Notebook",     price: 20, emoji: "📓", stock: 45  },
-  { id: 2,  name: "Pencil",       price: 10, emoji: "✏️",  stock: 120 },
-  { id: 3,  name: "Pen",          price: 10, emoji: "🖊️",  stock: 95  },
-  { id: 4,  name: "Eraser",       price: 5,  emoji: "🧽",  stock: 80  },
-  { id: 5,  name: "Sharpener",    price: 15, emoji: "🔪",  stock: 0   },
-  { id: 6,  name: "Ruler",        price: 20, emoji: "📏",  stock: 60  },
-  { id: 7,  name: "Highlighters", price: 40, emoji: "🖍️",  stock: 30  },
-  { id: 8,  name: "Glue",         price: 30, emoji: "🫙",  stock: 25  },
-  { id: 9,  name: "Scissors",     price: 25, emoji: "✂️",  stock: 0   },
-  { id: 10, name: "Crayons",      price: 50, emoji: "🎨",  stock: 18  },
+  { id: 1,  name: "Notebook",     price: 20, image: "/assets/notebook.webp", stock: 45  },
+  { id: 2,  name: "Pencil",       price: 10, image: "/assets/pencil.webp", stock: 120 },
+  { id: 3,  name: "Pen",          price: 10, image: "/assets/pen.webp", stock: 95  },
+  { id: 4,  name: "Eraser",       price: 5,  image: "/assets/eraser.webp", stock: 80  },
+  { id: 5,  name: "Sharpener",    price: 15, image: "/assets/sharpener.webp", stock: 0   },
+  { id: 6,  name: "Ruler",        price: 20, image: "/assets/ruler.webp", stock: 60  },
+  { id: 7,  name: "Highlighters", price: 40, image: "/assets/highlighters.webp", stock: 30  },
+  { id: 8,  name: "Glue",         price: 30, image: "/assets/glue.webp", stock: 25  },
+  { id: 9,  name: "Scissors",     price: 25, image: "/assets/scissors.webp", stock: 0   },
+  { id: 10, name: "Crayons",      price: 50, image: "/assets/crayons.webp", stock: 18  },
 ];
 
 const ORDERS_ADMIN: AdminOrder[] = [
@@ -504,9 +504,10 @@ function CustomerPortal({ user, onLogout }: { user: User; onLogout: () => void }
           {/* PRODUCTS */}
           {tab === "products" && (
             <div className="space-y-6">
-              <h1 className="text-2xl font-bold text-pink-700" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
-                Our Products 🛍️
-              </h1>
+            <h1 className="flex items-center gap-2 ...">
+              <ShoppingBagIcon className="w-7 h-7 text-pink-500" />
+              Our Products
+            </h1>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                 {PRODUCTS.map(p => (
                   <Card key={p.id} className={`border-pink-100 hover:shadow-md hover:shadow-pink-100 transition-shadow relative overflow-hidden ${p.stock === 0 ? "opacity-70" : ""}`}>
@@ -515,8 +516,15 @@ function CustomerPortal({ user, onLogout }: { user: User; onLogout: () => void }
                         <Badge variant="destructive" className="text-xs">Out of Stock</Badge>
                       </div>
                     )}
-                    <CardContent className="pt-6 text-center">
-                      <div className="text-4xl mb-3">{p.emoji}</div>
+                    <CardContent className="pt-4 text-center">
+                      <div className="w-full h-32 mb-3 rounded-lg overflow-hidden bg-pink-50">
+                        <img
+                          src={p.image}
+                          alt={p.name}
+                          className="w-full h-full object-cover"
+                          onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=300&h=300&fit=crop"; }}
+                        />
+                      </div>
                       <p className="font-bold text-gray-800 text-sm">{p.name}</p>
                       <p className="text-pink-600 font-black text-xl mt-1">₱{p.price}</p>
                       <Button
@@ -554,8 +562,13 @@ function CustomerPortal({ user, onLogout }: { user: User; onLogout: () => void }
                     <Separator className="mb-4 border-dashed border-pink-200" />
                     <div className="space-y-2">
                       {receipt.items.map(i => (
-                        <div key={i.id} className="flex justify-between text-sm">
-                          <span className="text-gray-600">{i.emoji} {i.name} ×{i.qty}</span>
+                        <div key={i.id} className="flex justify-between text-sm items-center">
+                          <div className="flex items-center gap-2">
+                            <div className="w-8 h-8 rounded overflow-hidden bg-pink-50 shrink-0">
+                              <img src={i.image} alt={i.name} className="w-full h-full object-cover" />
+                            </div>
+                            <span className="text-gray-600">{i.name} ×{i.qty}</span>
+                          </div>
                           <span className="font-bold text-pink-600">₱{i.price * i.qty}</span>
                         </div>
                       ))}
@@ -600,7 +613,9 @@ function CustomerPortal({ user, onLogout }: { user: User; onLogout: () => void }
                           <TableRow key={i.id} className="hover:bg-pink-50/30">
                             <TableCell>
                               <div className="flex items-center gap-2">
-                                <span className="text-2xl">{i.emoji}</span>
+                                <div className="w-10 h-10 rounded-lg overflow-hidden bg-pink-50 shrink-0">
+                                  <img src={i.image} alt={i.name} className="w-full h-full object-cover" />
+                                </div>
                                 <span className="font-semibold text-sm">{i.name}</span>
                               </div>
                             </TableCell>
@@ -893,7 +908,9 @@ function AdminPortal({ user, onLogout }: { user: User; onLogout: () => void }): 
                       <TableRow key={p.id} className="hover:bg-pink-50/30">
                         <TableCell>
                           <div className="flex items-center gap-2">
-                            <span className="text-xl">{p.emoji}</span>
+                            <div className="w-9 h-9 rounded-lg overflow-hidden bg-pink-50 shrink-0">
+                              <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
+                            </div>
                             <span className="font-semibold">{p.name}</span>
                           </div>
                         </TableCell>
@@ -981,11 +998,11 @@ function SupplierPortal({ user, onLogout }: { user: User; onLogout: () => void }
   ];
 
   const supplyItems: SupplyItem[] = [
-    { name: "Notebook",     supplied: 200, needed: 50,  emoji: "📓" },
-    { name: "Pencil",       supplied: 500, needed: 0,   emoji: "✏️" },
-    { name: "Crayons",      supplied: 100, needed: 80,  emoji: "🎨" },
-    { name: "Highlighters", supplied: 150, needed: 120, emoji: "🖍️" },
-    { name: "Sharpener",    supplied: 0,   needed: 200, emoji: "🔪" },
+    { name: "Notebook",     supplied: 200, needed: 50,  image: "/assets/notebook.webp" },
+    { name: "Pencil",       supplied: 500, needed: 0,   image: "/assets/pencil.webp" },
+    { name: "Crayons",      supplied: 100, needed: 80,  image: "/assets/crayons.webp" },
+    { name: "Highlighters", supplied: 150, needed: 120, image: "/assets/highlighters.webp" },
+    { name: "Sharpener",    supplied: 0,   needed: 200, image: "/assets/sharpener.webp" },
   ];
 
   const totalRevenue    = 18450;
@@ -1060,7 +1077,9 @@ function SupplierPortal({ user, onLogout }: { user: User; onLogout: () => void }
                   <CardContent className="space-y-3">
                     {supplyItems.map(i => (
                       <div key={i.name} className="flex items-center gap-3">
-                        <span className="text-xl shrink-0">{i.emoji}</span>
+                        <div className="w-9 h-9 rounded-lg overflow-hidden bg-pink-50 shrink-0">
+                          <img src={i.image} alt={i.name} className="w-full h-full object-cover" />
+                        </div>
                         <div className="flex-1">
                           <p className="text-xs font-semibold text-gray-700 mb-1">{i.name}</p>
                           <div className="h-2 bg-pink-100 rounded-full overflow-hidden">
@@ -1097,7 +1116,9 @@ function SupplierPortal({ user, onLogout }: { user: User; onLogout: () => void }
                       <TableRow key={i.name} className="hover:bg-pink-50/30">
                         <TableCell>
                           <div className="flex items-center gap-2">
-                            <span className="text-xl">{i.emoji}</span>
+                            <div className="w-9 h-9 rounded-lg overflow-hidden bg-pink-50 shrink-0">
+                              <img src={i.image} alt={i.name} className="w-full h-full object-cover" />
+                            </div>
                             <span className="font-semibold">{i.name}</span>
                           </div>
                         </TableCell>
