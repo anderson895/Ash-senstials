@@ -11,7 +11,6 @@ export default function App(): React.ReactElement {
   const [user, setUser]       = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
-  // On first mount, restore session from localStorage
   useEffect(() => {
     const saved = loadSession();
     if (saved) setUser(saved);
@@ -28,7 +27,6 @@ export default function App(): React.ReactElement {
     setUser(null);
   };
 
-  // Show blank screen briefly while restoring session (avoids login flash)
   if (loading) {
     return (
       <div className="min-h-screen bg-pink-50 flex items-center justify-center">
